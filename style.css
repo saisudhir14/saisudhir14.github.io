@@ -170,3 +170,7 @@ body{
 /* .active{
     color: red;
 } */
+
+.scrollmagic-pin-spacer{
+    position: static !important;
+}
