@@ -1,5 +1,6 @@
 let controller;
 let slideScene;
+let pageScene;
 
 function animateSlides(){
     //Initiating the controller
@@ -10,7 +11,7 @@ function animateSlides(){
 
     //To loop over each slide
 
-    sliders.forEach(slide => {
+    sliders.forEach((slide , index , slides) => {
         const revealImg = slide.querySelector(".reveal-img");
         const img  = slide.querySelector("img");
         const revealText = slide.querySelector(".reveal-text");
@@ -28,15 +29,38 @@ function animateSlides(){
         slideScene = new ScrollMagic.Scene({
             triggerElement : slide, 
             triggerHook : 0.25,
-
+            reverse : false             // delete this incase if you no longer need animation when you scroll upwards
+       
         })
         .setTween(slideTl)
         .addIndicators({
             colorStart : "white",
             colorTrigger : "white",
-            name : "slide"
+            name : "slide",
+            
         })
         .addTo(controller);
+
+        //Creating animation - timeline or scrolling
+        const pageTl = gsap.timeline();
+        pageTl.fromTo(slide, {opacity : 1, scale :1} , {opacity : 0, scale : 0.5});
+
+        //Creating a new Scene
+        pageScene = new ScrollMagic.Scene({
+            triggerElement : slide,
+            duration : "100%",
+            triggerHook : 0
+        }).addIndicators({
+            colorStart : "white",
+            colorTrigger : "white",
+            name : "page", 
+            indent : 200
+        })
+        .setPin(slide)
+        .setTween(pageTl)
+        .addTo(controller);
+
+
 
 });
 
