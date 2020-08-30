@@ -49,7 +49,7 @@ function animateSlides(){
          pageTl.fromTo(slide, {opacity : 1, scale :1} , {opacity : 0, scale : 0.5});
             pageTl.fromTo(nextSlide,{y: "50%"} , {y: "0%"}, "-=0.5");
 
-            
+
         //Creating a new Scene
         pageScene = new ScrollMagic.Scene({
             triggerElement : slide,
@@ -64,11 +64,24 @@ function animateSlides(){
         .setPin(slide ,{pushFollowers : false})
         .setTween(pageTl)
         .addTo(controller);
-
-
-
 });
 
-}
-    animateSlides();
+} 
+    //Adding an event listener to the cursor on mousemove while running cursor..
+
+    function cursor(e){
+        //console.log(e);
+
+        //modifying cursor top and left..or..
+        let mouse = document.querySelector(".cursor");
+        mouse.style.left = e.pageX + "px";
+        mouse.style.top = e.pageY + "px";
+
+    }
+    addEventListener("mousemove", cursor);
+
+animateSlides();
+
+
+
 
