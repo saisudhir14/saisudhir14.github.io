@@ -56,7 +56,7 @@ function animateSlides(){
             name : "page", 
             indent : 200
         })
-        .setPin(slide)
+        .setPin(slide ,{pushFollowers : false})
         .setTween(pageTl)
         .addTo(controller);
 
