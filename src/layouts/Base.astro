@@ -27,6 +27,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href={url('/favicon.svg')} />
     <link rel="apple-touch-icon" href={url('/apple-touch-icon.png')} />
+    <link rel="manifest" href={url('/manifest.webmanifest')} />
     <meta name="apple-mobile-web-app-title" content={SITE.appName} />
     <meta name="theme-color" content="#000000" />
     <link rel="alternate" type="application/rss+xml" title={SITE.name} href={url('/rss.xml')} />
@@ -59,5 +60,12 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     </main>
     <Footer />
     <Search />
+    {import.meta.env.PROD && (
+      <script is:inline define:vars={{ sw: url('/sw.js'), scope: url('/') }}>
+        if ('serviceWorker' in navigator) {
+          addEventListener('load', () => navigator.serviceWorker.register(sw, { scope }));
+        }
+      </script>
+    )}
   </body>
 </html>

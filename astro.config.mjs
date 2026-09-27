@@ -7,7 +7,7 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: process.env.SITE_URL || 'https://example.com',
   base: process.env.BASE_PATH || '/',
-  integrations: [sitemap()],
+  integrations: [sitemap({ filter: (page) => !/\/(offline|admin)\/?$/.test(page) })],
   markdown: {
     shikiConfig: {
       themes: { light: 'github-light', dark: 'github-dark' },

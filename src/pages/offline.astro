@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro';
+import { url } from '../lib/utils';
+---
+
+<Base title="Offline">
+  <h1 class="page-title">You're offline</h1>
+  <p class="page-intro">Posts you have opened before are saved on this device. Pick one below, or try again when you're back online.</p>
+  <ol class="saved-list" id="saved" data-blog={url('/blog/')}></ol>
+</Base>
+
+<script>
+  // List the posts this device has saved for offline reading.
+  const list = document.getElementById('saved') as HTMLOListElement;
+  const blog = list.dataset.blog!;
+
+  (async () => {
+    if (!('caches' in window)) return;
+    const cache = await caches.open('pages');
+    const keys = (await cache.keys()).filter((r) => new URL(r.url).pathname.startsWith(blog));
+    const items = await Promise.all(
+      keys.map(async (req) => {
+        const html = await (await cache.match(req))!.text();
+        const title = html.match(/<title>([^<|]*)/)?.[1]?.trim() || new URL(req.url).pathname;
+        return { href: new URL(req.url).pathname, title };
+      })
+    );
+    if (items.length === 0) {
+      list.outerHTML = '<p class="muted">No saved posts yet.</p>';
+      return;
+    }
+    for (const { href, title } of items) {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = href;
+      a.className = 'entry-title';
+      a.textContent = title;
+      li.append(a);
+      list.append(li);
+    }
+  })();
+</script>

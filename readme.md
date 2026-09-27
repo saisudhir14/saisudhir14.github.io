@@ -16,6 +16,8 @@ Publishing a post needs no code. Each post is one Markdown file. When you add on
 
 Dark theme by default. The footer has a light/dark switch.
 
+The site is a PWA. Readers can install it as an app (Add to Home Screen on iPhone), and posts they have opened still load offline. The service worker is built from `src/pages/sw.js.ts`.
+
 ## Run locally
 
 ```bash
