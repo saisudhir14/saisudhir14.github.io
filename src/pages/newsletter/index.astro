@@ -1,0 +1,17 @@
+---
+import Base from '../../layouts/Base.astro';
+import MonthIndex from '../../components/MonthIndex.astro';
+import { getIssues, url } from '../../lib/utils';
+
+const items = (await getIssues()).map((i) => ({
+  title: i.data.title,
+  href: url(`/newsletter/${i.id}`),
+  date: i.data.date,
+  draft: i.data.draft,
+}));
+---
+
+<Base title="Newsletter" description="Issues of my newsletter.">
+  <h1 class="page-title">Newsletter</h1>
+  {items.length === 0 ? <p class="muted">No issues yet.</p> : <MonthIndex items={items} />}
+</Base>

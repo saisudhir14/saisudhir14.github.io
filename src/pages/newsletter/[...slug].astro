@@ -1,0 +1,30 @@
+---
+import { render } from 'astro:content';
+import Article from '../../layouts/Article.astro';
+import { getIssues, readingTime, url } from '../../lib/utils';
+
+export async function getStaticPaths() {
+  const issues = await getIssues();
+  return issues.map((issue, i) => ({
+    params: { slug: issue.id },
+    props: { issue, newer: issues[i - 1], older: issues[i + 1] },
+  }));
+}
+
+const { issue, newer, older } = Astro.props;
+const { Content, headings } = await render(issue);
+const link = (p?: typeof issue) => p && { title: p.data.title, href: url(`/newsletter/${p.id}`) };
+---
+
+<Article
+  title={issue.data.title}
+  description={issue.data.description}
+  date={issue.data.date}
+  minutes={readingTime(issue.body)}
+  headings={headings}
+  back={{ label: 'Newsletter', href: url('/newsletter') }}
+  older={link(older)}
+  newer={link(newer)}
+>
+  <Content />
+</Article>

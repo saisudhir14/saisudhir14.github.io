@@ -1,0 +1,77 @@
+# Sveltia CMS: the editor at /admin
+# Docs: https://sveltiacms.app/en/docs
+#
+# repo below must match your GitHub repo name.
+# Sign in on /admin with "Sign In with Token" using a GitHub fine-grained token
+# (Repository access: this repo only. Permissions: Contents, Read and write).
+
+backend:
+  name: github
+  repo: saisudhir14/saisudhir14.github.io
+  branch: main
+
+# Uploaded images are committed here and served from /images/uploads
+media_folder: public/images/uploads
+public_folder: /images/uploads
+
+collections:
+  - name: blog
+    label: Blog Posts
+    label_singular: Post
+    folder: src/content/blog
+    create: true
+    extension: md
+    format: frontmatter
+    slug: "{{slug}}"
+    summary: "{{title}} ({{date}})"
+    sortable_fields: [date, title]
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Description, name: description, widget: text, required: false, hint: "One line summary for search results and link previews" }
+      - { label: Date, name: date, widget: datetime, time_format: false, date_format: "YYYY-MM-DD", format: "YYYY-MM-DD" }
+      - { label: Tags, name: tags, widget: list, required: false, hint: "Comma separated, for example: AI, Python, AWS" }
+      - { label: Draft, name: draft, widget: boolean, default: false, required: false, hint: "Drafts are not published" }
+      - { label: Body, name: body, widget: markdown }
+
+  - name: newsletter
+    label: Newsletter
+    label_singular: Issue
+    folder: src/content/newsletter
+    create: true
+    extension: md
+    format: frontmatter
+    slug: "{{slug}}"
+    summary: "{{title}} ({{date}})"
+    sortable_fields: [date, title]
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Description, name: description, widget: text, required: false }
+      - { label: Date, name: date, widget: datetime, time_format: false, date_format: "YYYY-MM-DD", format: "YYYY-MM-DD" }
+      - { label: Draft, name: draft, widget: boolean, default: false, required: false }
+      - { label: Body, name: body, widget: markdown }
+
+  - name: projects
+    label: Projects
+    label_singular: Project
+    folder: src/content/projects
+    create: true
+    extension: md
+    format: frontmatter
+    slug: "{{slug}}"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Role, name: role, widget: string, required: false, hint: "For example: Creator, Maintainer, Contributor" }
+      - { label: Description, name: description, widget: text }
+      - { label: Date, name: date, widget: datetime, time_format: false, date_format: "YYYY-MM-DD", format: "YYYY-MM-DD", hint: "Used for ordering, newest first" }
+      - { label: Link, name: url, widget: string, required: false }
+
+  - name: pages
+    label: Pages
+    files:
+      - label: About Me
+        name: about
+        file: src/content/pages/about.md
+        fields:
+          - { label: Title, name: title, widget: string }
+          - { label: Description, name: description, widget: string, required: false }
+          - { label: Body, name: body, widget: markdown }

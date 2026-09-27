@@ -1,0 +1,30 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { SITE } from '../site.config';
+import { url } from '../lib/utils';
+
+const about = await getEntry('pages', 'about');
+if (!about) throw new Error('Missing src/content/pages/about.md');
+const { Content } = await render(about);
+const { photo, details } = SITE.profile;
+const initials = SITE.name.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+---
+
+<Base title={about.data.title} description={about.data.description}>
+  <h1 class="page-title">{SITE.name}</h1>
+  <div class="about">
+    <aside class="profile">
+      {photo
+        ? <img class="avatar" src={url(photo)} alt={SITE.name} width="256" height="256" />
+        : <div class="avatar initials" aria-hidden="true">{initials}</div>}
+      <h2>{SITE.name}</h2>
+      <ul>
+        {details.map((d) => <li>{d.icon} {d.text}</li>)}
+      </ul>
+    </aside>
+    <div class="prose">
+      <Content />
+    </div>
+  </div>
+</Base>

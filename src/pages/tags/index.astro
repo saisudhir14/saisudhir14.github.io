@@ -1,0 +1,13 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getPosts, allTags, url } from '../../lib/utils';
+
+const tags = allTags(await getPosts());
+---
+
+<Base title="Tags" description="Posts grouped by topic.">
+  <h1 class="page-title">Tags</h1>
+  <div class="tag-cloud">
+    {tags.map((t) => <a href={url(`/tags/${t.slug}`)}>{t.name}<span>{t.count}</span></a>)}
+  </div>
+</Base>

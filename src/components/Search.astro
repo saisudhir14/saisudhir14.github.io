@@ -1,0 +1,86 @@
+---
+import { url } from '../lib/utils';
+---
+
+<dialog class="search-dialog" id="search-dialog" data-index={url('/search.json')} aria-label="Search posts">
+  <input id="search-input" type="search" placeholder="Search posts" autocomplete="off" />
+  <ul class="search-results" id="search-results"></ul>
+</dialog>
+
+<script>
+  type Item = { title: string; description: string; tags: string[]; date: string; url: string };
+
+  const dialog = document.getElementById('search-dialog') as HTMLDialogElement;
+  const input = document.getElementById('search-input') as HTMLInputElement;
+  const list = document.getElementById('search-results') as HTMLUListElement;
+  let items: Item[] | null = null;
+  let active = 0;
+
+  const esc = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+
+  async function load() {
+    if (!items) items = await fetch(dialog.dataset.index!).then((r) => r.json());
+    return items!;
+  }
+
+  function score(item: Item, terms: string[]) {
+    let s = 0;
+    const title = item.title.toLowerCase();
+    const tags = item.tags.join(' ').toLowerCase();
+    const desc = item.description.toLowerCase();
+    for (const t of terms) {
+      if (title.includes(t)) s += 3;
+      else if (tags.includes(t)) s += 2;
+      else if (desc.includes(t)) s += 1;
+      else return 0;
+    }
+    return s;
+  }
+
+  async function render() {
+    const all = await load();
+    const terms = input.value.toLowerCase().split(/\s+/).filter(Boolean);
+    const results = terms.length
+      ? all.map((i) => [i, score(i, terms)] as const).filter(([, s]) => s > 0).sort((a, b) => b[1] - a[1]).map(([i]) => i)
+      : all.slice(0, 8);
+    active = 0;
+    list.innerHTML = results.length
+      ? results.slice(0, 20).map((r, i) => `
+          <li><a href="${r.url}" class="${i === 0 ? 'active' : ''}">
+            <div class="r-title">${esc(r.title)}</div>
+            <div class="r-meta">${esc(r.date)}${r.tags.length ? ' · ' + esc(r.tags.join(', ')) : ''}</div>
+          </a></li>`).join('')
+      : `<li class="search-empty">No posts found.</li>`;
+  }
+
+  function open() {
+    dialog.showModal();
+    input.value = '';
+    input.focus();
+    render();
+  }
+
+  document.querySelectorAll('[data-open-search]').forEach((b) => b.addEventListener('click', open));
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      dialog.open ? dialog.close() : open();
+    }
+  });
+  input.addEventListener('input', render);
+  input.addEventListener('keydown', (e) => {
+    const links = [...list.querySelectorAll('a')];
+    if (!links.length) return;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      links[active].classList.remove('active');
+      active = (active + (e.key === 'ArrowDown' ? 1 : -1) + links.length) % links.length;
+      links[active].classList.add('active');
+      links[active].scrollIntoView({ block: 'nearest' });
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      links[active].click();
+    }
+  });
+  dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+</script>

@@ -1,0 +1,23 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const projects = (await getCollection('projects')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Base title="Projects" description="Projects I have built or worked on.">
+  <h1 class="page-title">Projects</h1>
+  <p class="page-intro">Some of the projects I have built or worked on.</p>
+  <div class="projects">
+    {projects.map(({ data }) => {
+      const Tag = data.url ? 'a' : 'div';
+      return (
+        <Tag class="project" href={data.url} target={data.url ? '_blank' : undefined} rel={data.url ? 'noopener' : undefined}>
+          <h3>{data.title}</h3>
+          {data.role && <div class="role">{data.role}</div>}
+          <p>{data.description}</p>
+        </Tag>
+      );
+    })}
+  </div>
+</Base>

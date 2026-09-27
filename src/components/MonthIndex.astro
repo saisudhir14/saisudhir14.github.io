@@ -1,0 +1,38 @@
+---
+import { groupByMonth, formatDate, slugify, url, type IndexItem } from '../lib/utils';
+
+interface Props {
+  items: IndexItem[];
+}
+const groups = groupByMonth(Astro.props.items);
+---
+
+<div class="index">
+  {groups.map(([month, items]) => (
+    <section class="month">
+      <h2>{month}</h2>
+      <ol>
+        {items.map((item) => (
+          <li>
+            <a class="entry-title" href={item.href}>{item.title}</a>
+            <span class="entry-meta">
+              <time datetime={item.date.toISOString()}>{formatDate(item.date)}</time>
+              {item.tags && item.tags.length > 0 && (
+                <>
+                  {' · '}
+                  {item.tags.map((t, i) => (
+                    <>
+                      <a href={url(`/tags/${slugify(t)}`)}>{t}</a>
+                      {i < item.tags!.length - 1 && ', '}
+                    </>
+                  ))}
+                </>
+              )}
+              {item.draft && ' · draft'}
+            </span>
+          </li>
+        ))}
+      </ol>
+    </section>
+  ))}
+</div>

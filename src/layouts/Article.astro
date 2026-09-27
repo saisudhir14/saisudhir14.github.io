@@ -1,0 +1,68 @@
+---
+import type { MarkdownHeading } from 'astro';
+import Base from './Base.astro';
+import { formatDate, slugify, url } from '../lib/utils';
+
+type Link = { title: string; href: string } | undefined;
+
+interface Props {
+  title: string;
+  description?: string;
+  date: Date;
+  updated?: Date;
+  minutes: number;
+  tags?: string[];
+  headings: MarkdownHeading[];
+  back: { label: string; href: string };
+  older?: Link;
+  newer?: Link;
+}
+
+const { title, description, date, updated, minutes, tags = [], headings, back, older, newer } = Astro.props;
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+<Base title={title} description={description} type="article">
+  <article class="article narrow">
+    <a class="back" href={back.href}>‹ {back.label}</a>
+    <header class="article-header">
+      <h1>{title}</h1>
+      <div class="article-meta">
+        <time datetime={date.toISOString()}>{formatDate(date)}</time>
+        {' · '}{minutes} min read
+        {updated && <> · Updated {formatDate(updated)}</>}
+        {tags.length > 0 && (
+          <>
+            {' · '}
+            {tags.map((t, i) => (
+              <>
+                <a href={url(`/tags/${slugify(t)}`)}>{t}</a>
+                {i < tags.length - 1 && ', '}
+              </>
+            ))}
+          </>
+        )}
+      </div>
+    </header>
+
+    {toc.length > 2 && (
+      <details class="toc">
+        <summary>Contents</summary>
+        <ul>
+          {toc.map((h) => <li class={`depth-${h.depth}`}><a href={`#${h.slug}`}>{h.text}</a></li>)}
+        </ul>
+      </details>
+    )}
+
+    <div class="prose">
+      <slot />
+    </div>
+
+    {(older || newer) && (
+      <nav class="article-nav" aria-label="More">
+        <div>{older && <a href={older.href}><small>Previous</small><span>{older.title}</span></a>}</div>
+        <div class="next">{newer && <a href={newer.href}><small>Next</small><span>{newer.title}</span></a>}</div>
+      </nav>
+    )}
+  </article>
+</Base>

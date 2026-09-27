@@ -1,0 +1,33 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Base from '../layouts/Base.astro';
+import MonthIndex from '../components/MonthIndex.astro';
+import { SITE } from '../site.config';
+import { getPosts, postToItem, url } from '../lib/utils';
+
+// "/" is page 1, "/2", "/3" and so on hold older posts.
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getPosts();
+  return paginate(posts, { pageSize: SITE.postsPerPage });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+const pageHref = (n: number) => url(n === 1 ? '/' : `/${n}`);
+const numbers = Array.from({ length: page.lastPage }, (_, i) => i + 1);
+---
+
+<Base>
+  <h1 class="page-title">Index</h1>
+
+  {page.data.length === 0 ? <p class="muted">No posts yet.</p> : <MonthIndex items={page.data.map(postToItem)} />}
+
+  {page.lastPage > 1 && (
+    <nav class="pagination" aria-label="Pagination">
+      {page.currentPage > 1 && <a href={pageHref(page.currentPage - 1)}>‹ Previous</a>}
+      {numbers.map((n) =>
+        n === page.currentPage ? <span class="current" aria-current="page">{n}</span> : <a href={pageHref(n)}>{n}</a>
+      )}
+      {page.currentPage < page.lastPage && <a href={pageHref(page.currentPage + 1)}>Next ›</a>}
+    </nav>
+  )}
+</Base>
