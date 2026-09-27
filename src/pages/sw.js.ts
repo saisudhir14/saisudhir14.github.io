@@ -37,18 +37,26 @@ async function trim(cache) {
   for (let i = 0; i < keys.length - MAX_PAGES; i++) await cache.delete(keys[i]);
 }
 
-async function networkFirst(request, fallbackToOffline) {
+async function networkFirst(request, isPage) {
   const cache = await caches.open(PAGES);
   try {
-    const response = await fetch(request);
+    // no-cache: always ask the server if the page changed (GitHub Pages lets
+    // browsers keep HTML for 10 minutes otherwise). manual: let the browser
+    // follow GitHub's /post -> /post/ redirect itself.
+    const response = await fetch(request.url, { cache: 'no-cache', redirect: isPage ? 'manual' : 'follow' });
     if (response.ok) {
       cache.put(request, response.clone()).then(() => trim(cache));
     }
     return response;
   } catch {
-    const cached = await cache.match(request, { ignoreSearch: true });
+    // Offline. Links may point at /post while the saved copy is /post/, so try both.
+    const u = new URL(request.url);
+    const other = u.pathname.endsWith('/') ? u.pathname.slice(0, -1) : u.pathname + '/';
+    const cached =
+      (await cache.match(request, { ignoreSearch: true })) ||
+      (await cache.match(u.origin + other, { ignoreSearch: true }));
     if (cached) return cached;
-    if (fallbackToOffline) return (await caches.match(OFFLINE)) || Response.error();
+    if (isPage) return (await caches.match(OFFLINE)) || Response.error();
     return Response.error();
   }
 }
