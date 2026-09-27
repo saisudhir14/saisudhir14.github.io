@@ -58,9 +58,9 @@ img { max-width: 100%; height: auto; }
   backdrop-filter: blur(12px);
 }
 .site-header .wrap { display: flex; align-items: center; height: 5rem; gap: 2rem; }
-.brand { display: flex; align-items: center; gap: 0.65rem; font-size: 1.05rem; font-weight: 500; }
-.brand svg { width: 1.5rem; height: 1.5rem; }
-.nav { margin-left: auto; display: flex; align-items: center; gap: 2rem; font-size: 0.95rem; font-weight: 500; }
+.brand { display: flex; align-items: center; gap: 0.65rem; font-size: 1.05rem; font-weight: 500; white-space: nowrap; }
+.brand svg { width: 1.5rem; height: 1.5rem; flex-shrink: 0; }
+.nav { margin-left: auto; display: flex; align-items: center; gap: 2rem; font-size: 0.95rem; font-weight: 500; white-space: nowrap; }
 .nav a, .nav button { color: var(--muted); transition: color 0.15s; }
 .nav a:hover, .nav button:hover, .nav a[aria-current='page'] { color: var(--fg); }
 .search-btn {
@@ -74,7 +74,7 @@ kbd {
 .menu-btn { display: none; margin-left: auto; background: none; border: 0; color: var(--fg); cursor: pointer; padding: 0.25rem; }
 .menu-btn svg { width: 1.5rem; height: 1.5rem; display: block; }
 
-@media (max-width: 760px) {
+@media (max-width: 960px) {
   .wrap { padding-inline: 1.25rem; }
   .site-header .wrap { height: 4rem; }
   .menu-btn { display: block; }
