@@ -3,6 +3,7 @@ export const SITE = {
   name: 'Sai Sudheer Dontha',
   brand: 'Sai Sudheer Dontha', // text next to the logo in the header
   title: 'Sai Sudheer Dontha',
+  appName: 'Sai Sudheer', // label under the icon when added to a phone home screen (keep it short)
   description: 'Notes on AI agents, Go, cloud and what I learn building software.',
   postsPerPage: 20,
 

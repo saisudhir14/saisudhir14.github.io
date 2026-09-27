@@ -26,6 +26,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href={url('/favicon.svg')} />
+    <link rel="apple-touch-icon" href={url('/apple-touch-icon.png')} />
+    <meta name="apple-mobile-web-app-title" content={SITE.appName} />
+    <meta name="theme-color" content="#000000" />
     <link rel="alternate" type="application/rss+xml" title={SITE.name} href={url('/rss.xml')} />
     <link rel="sitemap" href={url('/sitemap-index.xml')} />
     <meta property="og:type" content={type} />
@@ -45,6 +48,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
         let t = null;
         try { t = localStorage.getItem('theme'); } catch {}
         document.documentElement.classList.toggle('dark', t !== 'light');
+        if (t === 'light') document.querySelector('meta[name="theme-color"]').content = '#ffffff';
       })();
     </script>
   </head>
