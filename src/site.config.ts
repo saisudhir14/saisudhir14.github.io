@@ -5,18 +5,23 @@ export const SITE = {
   title: 'Sai Sudheer Dontha',
   appName: 'Sai Sudheer', // label under the icon when added to a phone home screen (keep it short)
   description: 'Notes on AI agents, Go, cloud and what I learn building software.',
+  homeDescription:
+    'Sai Sudheer Dontha writes about AI agents, MCP, Go, and cloud software. Forward Deployed Engineer in Atlanta.',
   postsPerPage: 20,
 
   // About page sidebar. Put your photo in public/images/ and set the path, or leave '' for initials.
   profile: {
     photo: '/images/profile.jpg',
+    jobTitle: 'Forward Deployed Engineer',
+    employer: 'DaVita Kidney Care',
+    location: 'Atlanta, USA',
     details: [
       { icon: '📍', text: 'Atlanta, 🇺🇸 USA' },
       { icon: '👨‍💻', text: 'Forward Deployed Engineer' },
       { icon: '🤖', text: 'AI Agents and MCP' },
       { icon: '🩺', text: 'DaVita Kidney Care' },
     ],
-  },
+  },  
 
   socials: {
     email: 'sudhirdontha@gmail.com', // leave empty to hide

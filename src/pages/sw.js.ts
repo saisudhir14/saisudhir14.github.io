@@ -22,7 +22,7 @@ const PRECACHE = [BASE, OFFLINE, BASE + 'favicon.svg', BASE + 'icons/icon-192.pn
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(STATIC).then((c) => c.addAll(PRECACHE)).then(() => self.skipWaiting()));
-});
+}); 
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(

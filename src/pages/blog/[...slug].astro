@@ -27,6 +27,7 @@ const link = (p?: typeof post) => p && { title: p.data.title, href: url(`/blog/$
   back={{ label: 'Blog', href: url('/') }}
   older={link(older)}
   newer={link(newer)}
+  posting
 >
   <Content />
 </Article>

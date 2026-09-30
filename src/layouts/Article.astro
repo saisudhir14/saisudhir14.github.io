@@ -16,13 +16,22 @@ interface Props {
   back: { label: string; href: string };
   older?: Link;
   newer?: Link;
+  /** Blog posts only. Newsletter issues stay ordinary articles. */
+  posting?: boolean;
 }
 
-const { title, description, date, updated, minutes, tags = [], headings, back, older, newer } = Astro.props;
+const { title, description, date, updated, minutes, tags = [], headings, back, older, newer, posting = false } =
+  Astro.props;
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 ---
 
-<Base title={title} description={description} type="article">
+<Base
+  title={title}
+  description={description}
+  type="article"
+  published={posting ? date : undefined}
+  modified={posting ? updated : undefined}
+>
   <article class="article narrow">
     <a class="back" href={back.href}>‹ {back.label}</a>
     <header class="article-header">

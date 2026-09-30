@@ -16,7 +16,7 @@ const pageHref = (n: number) => url(n === 1 ? '/' : `/${n}`);
 const numbers = Array.from({ length: page.lastPage }, (_, i) => i + 1);
 ---
 
-<Base>
+<Base description={page.currentPage === 1 ? SITE.homeDescription : SITE.description}>
   <h1 class="page-title">Index</h1>
 
   {page.data.length === 0 ? <p class="muted">No posts yet.</p> : <MonthIndex items={page.data.map(postToItem)} />}

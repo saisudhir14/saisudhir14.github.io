@@ -10,11 +10,61 @@ interface Props {
   title?: string;
   description?: string;
   type?: 'website' | 'article';
+  /** Set on blog posts so the page can be quoted as a BlogPosting. */
+  published?: Date;
+  modified?: Date;
+  /** Set on the about page so the page can be quoted as a Person. */
+  person?: boolean;
 }
 
-const { title, description = SITE.description, type = 'website' } = Astro.props;
+const { title, description = SITE.description, type = 'website', published, modified, person = false } = Astro.props;
 const fullTitle = title ? `${title} | ${SITE.name}` : SITE.title;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(url('/og.png'), Astro.site);
+const siteRoot = new URL(url('/'), Astro.site).href;
+const aboutUrl = new URL(url('/about/'), Astro.site).href;
+
+const sameAs = [SITE.socials.linkedin, SITE.socials.github].filter(Boolean);
+const graph: Record<string, unknown>[] = [
+  {
+    '@type': 'WebSite',
+    '@id': `${siteRoot}#website`,
+    name: SITE.name,
+    url: siteRoot,
+    description: SITE.description,
+    inLanguage: 'en',
+  },
+];
+
+if (person) {
+  graph.push({
+    '@type': 'Person',
+    '@id': `${aboutUrl}#person`,
+    name: SITE.name,
+    jobTitle: SITE.profile.jobTitle,
+    url: aboutUrl,
+    worksFor: { '@type': 'Organization', name: SITE.profile.employer },
+    homeLocation: { '@type': 'Place', name: SITE.profile.location },
+    sameAs,
+  });
+}
+
+if (published) {
+  graph.push({
+    '@type': 'BlogPosting',
+    headline: title ?? SITE.title,
+    description,
+    datePublished: published.toISOString(),
+    dateModified: (modified ?? published).toISOString(),
+    author: { '@type': 'Person', name: SITE.name, url: aboutUrl },
+    mainEntityOfPage: canonical.href,
+    url: canonical.href,
+    image: ogImage.href,
+    inLanguage: 'en',
+  });
+}
+
+const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c');
 ---
 
 <!doctype html>
@@ -36,7 +86,14 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <script type="application/ld+json" set:html={jsonLd} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

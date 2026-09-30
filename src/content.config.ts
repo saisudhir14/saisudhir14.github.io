@@ -12,13 +12,13 @@ const blog = defineCollection({
     updated: z.coerce.date().optional(),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
-  }),
+  }), 
 });
 
 const newsletter = defineCollection({
   loader: glob({ base: './src/content/newsletter', pattern: '**/[^_]*.{md,mdx}' }),
   schema: z.object({
-    title: z.string(),
+    title: z.string(), 
     description: z.string().default(''),
     date: z.coerce.date(),
     draft: z.boolean().default(false),

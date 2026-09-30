@@ -1,0 +1,36 @@
+# Search and answer engines may crawl this site.
+# Agent map: https://saisudhir14.github.io/llms.txt
+
+User-agent: *
+Allow: /
+Disallow: /admin
+
+User-agent: Googlebot
+Allow: /
+Disallow: /admin
+
+User-agent: Bingbot
+Allow: /
+Disallow: /admin
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /admin
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /admin
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin
+
+User-agent: Claude-SearchBot
+Allow: /
+Disallow: /admin
+
+Sitemap: https://saisudhir14.github.io/sitemap-index.xml

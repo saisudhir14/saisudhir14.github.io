@@ -11,10 +11,10 @@ const { photo, details } = SITE.profile;
 const initials = SITE.name.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 ---
 
-<Base title={about.data.title} description={about.data.description}>
+<Base title={about.data.title} description={about.data.description} person>
   <h1 class="page-title">{SITE.name}</h1>
   <div class="about">
-    <aside class="profile">
+    <aside class="profile"> 
       {photo
         ? <img class="avatar" src={url(photo)} alt={SITE.name} width="256" height="256" />
         : <div class="avatar initials" aria-hidden="true">{initials}</div>}

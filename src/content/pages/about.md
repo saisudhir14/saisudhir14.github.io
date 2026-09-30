@@ -21,7 +21,7 @@ I have a Master's in Information Systems from Central Michigan University.
 
 Here I write about what I learn: AI agents, MCP, Go and cloud. Find me on [LinkedIn](https://www.linkedin.com/in/sudhirdontha/) and [GitHub](https://github.com/saisudhir14).
 
----
+--- 
 
 ## Technologies
 
