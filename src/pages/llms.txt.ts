@@ -16,6 +16,7 @@ export async function GET(context: APIContext) {
   };
 
   const about = await getEntry('pages', 'about');
+  const dictionary = await getEntry('pages', 'dictionary');
   const posts = (await getPosts()).filter((p) => !p.data.draft);
   const projects = (await getCollection('projects')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
@@ -28,6 +29,7 @@ export async function GET(context: APIContext) {
     '',
     '## Pages',
     link('About', abs('/about'), about?.data.description ?? ''),
+    link(dictionary?.data.title ?? 'Dictionary', abs('/dictionary'), dictionary?.data.description ?? ''),
     link('Projects', abs('/projects'), 'Projects Sai Sudheer Dontha has built or worked on.'),
     link('Blog', abs('/'), 'Notes on AI agents, MCP, Go, and cloud.'),
     link('RSS', abs('/rss.xml'), 'Feed of new posts.'),

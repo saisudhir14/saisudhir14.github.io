@@ -75,3 +75,10 @@ collections:
           - { label: Title, name: title, widget: string }
           - { label: Description, name: description, widget: string, required: false }
           - { label: Body, name: body, widget: markdown }
+      - label: Dictionary
+        name: dictionary
+        file: src/content/pages/dictionary.md
+        fields:
+          - { label: Title, name: title, widget: string }
+          - { label: Description, name: description, widget: string, required: false }
+          - { label: Body, name: body, widget: markdown }
