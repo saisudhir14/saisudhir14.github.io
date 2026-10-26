@@ -74,8 +74,7 @@ kbd {
 .menu-btn { display: none; margin-left: auto; background: none; border: 0; color: var(--fg); cursor: pointer; padding: 0.25rem; }
 .menu-btn svg { width: 1.5rem; height: 1.5rem; display: block; }
 
-@media (max-width: 960px) {
-  .wrap { padding-inline: 1.25rem; }
+@media (max-width: 1100px) {
   .site-header .wrap { height: 4rem; }
   .menu-btn { display: block; }
   .nav {
@@ -85,6 +84,10 @@ kbd {
   }
   .nav.open { display: flex; }
   .nav a, .nav .search-btn { padding: 0.9rem 1.25rem; border-top: 1px solid var(--line); }
+}
+
+@media (max-width: 960px) {
+  .wrap { padding-inline: 1.25rem; }
 }
 
 /* ---------- Page scaffolding ---------- */
@@ -163,6 +166,44 @@ main { padding-block: 4.5rem 6rem; min-height: calc(100vh - 11rem); }
 .prose th { color: var(--fg); font-weight: 600; }
 .prose :not(pre) > code { font-family: var(--mono); font-size: 0.85em; background: var(--chip); padding: 0.15em 0.4em; border-radius: 0.3rem; }
 .prose pre { font-family: var(--mono); font-size: 0.875rem; line-height: 1.65; padding: 1.1rem 1.35rem; border-radius: 0.5rem; border: 1px solid var(--line); overflow-x: auto; margin: 2rem 0; }
+
+/* Dictionary categories. Hidden until the inline script folds each one into details. */
+.dictionary:not([data-ready]) > h2,
+.dictionary:not([data-ready]) > h2 ~ * { display: none; }
+.dictionary .cat { border-top: 1px solid var(--line); }
+.dictionary > .cat:last-child { border-bottom: 1px solid var(--line); }
+.dictionary .cat > summary {
+  position: relative;
+  cursor: pointer;
+  list-style: none;
+  padding: 0.95rem 1.75rem 0.95rem 0;
+}
+.dictionary .cat > summary::-webkit-details-marker { display: none; }
+.dictionary .cat > summary::marker { content: ""; }
+.dictionary .cat > summary h2,
+.dictionary .cat > summary h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  scroll-margin-top: 6rem;
+}
+.dictionary .cat.cat-parent > summary h2 { font-size: 1.45rem; }
+.dictionary .cat .cat > summary { padding-left: 1.15rem; }
+.dictionary .cat > summary::after {
+  content: "";
+  position: absolute;
+  right: 0.2rem;
+  top: 50%;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-right: 1.5px solid var(--muted);
+  border-bottom: 1.5px solid var(--muted);
+  transform: translateY(-70%) rotate(45deg);
+}
+.dictionary .cat[open] > summary::after { transform: translateY(-20%) rotate(-135deg); }
+.dictionary .cat[open] > summary { padding-bottom: 0.25rem; }
+.dictionary .cat > summary:focus-visible { outline: 1px solid var(--muted); outline-offset: 4px; }
+.dictionary .cat[open] > :last-child { margin-bottom: 1.25rem; }
 .astro-code { background-color: var(--code-bg) !important; }
 html.dark .astro-code,
 html.dark .astro-code span {

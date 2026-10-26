@@ -1,0 +1,107 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { url } from '../lib/utils';
+
+const page = await getEntry('pages', 'dictionary');
+if (!page) throw new Error('Missing src/content/pages/dictionary.md');
+const { Content } = await render(page);
+---
+
+<Base title={page.data.title} description={page.data.description}>
+  <article class="article narrow">
+    <a class="back" href={url('/')}>‹ Blog</a>
+    <header class="article-header">
+      <h1>{page.data.title}</h1>
+    </header>
+    <div class="prose dictionary">
+      <Content />
+    </div>
+    <script is:inline>
+      (function () {
+        const root = document.querySelector('.dictionary');
+        if (!root || root.hasAttribute('data-ready')) return;
+
+        const isHeading = (node, tag) => node.nodeType === 1 && node.tagName === tag;
+
+        function section(heading, body) {
+          const details = document.createElement('details');
+          details.className = 'cat';
+          const summary = document.createElement('summary');
+          summary.append(heading);
+          details.append(summary);
+          for (const node of body) details.append(node);
+          return details;
+        }
+
+        function groupBy(nodes, tag) {
+          const out = [];
+          let i = 0;
+          while (i < nodes.length) {
+            const node = nodes[i];
+            if (!isHeading(node, tag)) {
+              out.push(node);
+              i++;
+              continue;
+            }
+            const body = [];
+            i++;
+            while (i < nodes.length && !isHeading(nodes[i], tag)) {
+              body.push(nodes[i]);
+              i++;
+            }
+            out.push({ heading: node, body });
+          }
+          return out;
+        }
+
+        const top = groupBy([...root.childNodes], 'H2');
+        const frag = document.createDocumentFragment();
+        for (const item of top) {
+          if (!item.heading) {
+            frag.append(item);
+            continue;
+          }
+          const body = [];
+          for (const inner of groupBy(item.body, 'H3')) {
+            body.push(inner.heading ? section(inner.heading, inner.body) : inner);
+          }
+          const parent = section(item.heading, body);
+          parent.classList.add('cat-parent');
+          frag.append(parent);
+        }
+        root.replaceChildren(frag);
+        root.setAttribute('data-ready', '');
+
+        function openFor(id) {
+          const el = document.getElementById(id);
+          if (!el || !root.contains(el)) return;
+          let node = el;
+          while (node) {
+            if (node.tagName === 'DETAILS') node.open = true;
+            node = node.parentElement;
+          }
+        }
+
+        document.addEventListener('click', (event) => {
+          const link = event.target.closest('a[href^="#"]');
+          if (!link || !root.contains(link)) return;
+          openFor(decodeURIComponent(link.getAttribute('href').slice(1)));
+        });
+
+        if (location.hash) {
+          const id = decodeURIComponent(location.hash.slice(1));
+          openFor(id);
+          const target = document.getElementById(id);
+          if (target) requestAnimationFrame(() => target.scrollIntoView());
+        }
+      })();
+    </script>
+    <noscript>
+      <style>
+        .dictionary:not([data-ready]) > h2,
+        .dictionary:not([data-ready]) > h2 ~ * { display: revert !important; }
+      </style>
+    </noscript>
+  </article>
+</Base>
